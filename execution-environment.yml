@@ -1,0 +1,43 @@
+version: 3
+
+images:
+  base_image:
+    name: docker.io/redhat/ubi9:9.5-1744101466
+
+dependencies:
+  ansible_core:
+    package_pip: ansible-core
+  ansible_runner:
+    package_pip: ansible-runner
+  system:
+  # tools needed for your EE to work properly, and dependencies of Ansible collections
+  - openssh-clients
+  - sshpass
+  - sudo
+  - net-tools
+  - unzip
+  galaxy:
+    collections:
+    # include any Ansible collections you need in your EE here
+    - name: community.general
+    - name: community.postgresql
+    - name: kewlfft.aur
+
+additional_build_steps:
+  append_final:
+    - RUN $PYCMD -m pip install --no-cache-dir 'dumb-init==1.2.5'
+    # IMPORTANT NOTE: be sure that when you create the private key item in Infisical,
+    # that it ends with a newline or the key may not be interpreted as valid
+    - ENV INFISICAL_CLIENT_ID "CLIENT_ID_OF_SSH_PRIVATE_KEY_ITEM"
+    - ENV INFISICAL_CLIENT_SECRET "CLIENT_SECRET_OF_SSH_PRIVATE_KEY_ITEM"
+    - ENV INFISICAL_PROJECT_ID "PRIVATE_KEY_ITEM_PROJECT_ID"
+    - ENV INFISICAL_API_URL "https://your.infisical.instance.here/"
+    - RUN curl -1sLf https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.rpm.sh | sh
+    - RUN yum install -y infisical
+    - COPY entrypoint.sh /opt/app/entrypoint.sh
+
+options:
+  container_init:
+    entrypoint: '["/opt/app/entrypoint.sh"]'
+    cmd: '["bash"]'
+

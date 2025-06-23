@@ -1,0 +1,2 @@
+#!/usr/bin/bash
+ansible-builder build --tag your.registry.instance.if.any.here/ansible-ee:your_version_tag_here --container-runtime docker
