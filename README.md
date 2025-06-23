@@ -1,6 +1,8 @@
 # infisical-keyed-ansible-ee
 Create a custom Ansible Execution Environment that gets its SSH key securely from your Infisical server at runtime
 
+> N.B. You will have to skim through the source of at least the `execution-environment.yml` and insert your generated Infisical IDs and secrets. The `build` script too, if you want to use it.
+
 I know how to write a good readme. I just don't have the required motivation to do so right now. If you run into trouble, shoot me a question and I'll help if I can. The intent behind releasing this is to allow others to have access to what I needed at the time when I wrote it. It keeps the key in the SSH Agent memory only, and it never touches disk. Is it foolproof? No. A determined hacker can always get what they want. It's about making the level of inconvenience sit at a higher level than the motivation/skill/effort-level of your threats. As it happens, I found that on my hardware, Infisical had a bit of a memory problem, so I ended up reworking this to run using VaultWarden instead, which is what I currently use. There are pros and cons. Infisical is definitely faster.
 
 To use the EE once you've created it, run a playbook with it using Ansible Navigator like this:
